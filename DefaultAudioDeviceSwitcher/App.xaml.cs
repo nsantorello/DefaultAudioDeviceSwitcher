@@ -32,7 +32,7 @@ namespace DefaultAudioDeviceSwitcher
             base.OnStartup(e);
 
             _contextMenu = (System.Windows.Controls.ContextMenu)this.FindResource("_notifierContextMenu");
-            _contextMenu.DataContext = ...
+            //_contextMenu.DataContext = ...
 
             _icon = new NotifyIcon
             {
@@ -47,7 +47,7 @@ namespace DefaultAudioDeviceSwitcher
 
         private void IconClicked(object sender, EventArgs e)
         {
-            menu.IsOpen = true;
+            _contextMenu.IsOpen = true;
         }
 
         private static IEnumerable<string> GetDevices()

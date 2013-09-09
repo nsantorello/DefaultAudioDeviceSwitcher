@@ -9,7 +9,13 @@
 #include "Propidl.h"
 #include "Functiondiscoverykeys_devpkey.h"
 
-extern "C" HRESULT SetDefaultAudioPlaybackDevice(LPCWSTR devID)
+extern "C" struct AudioDevice
+{
+	LPWSTR id;
+	LPWSTR name;
+};
+
+extern "C"  __declspec(dllexport) HRESULT __stdcall SetDefaultDevice(LPCWSTR devID)
 {	
 	IPolicyConfigVista *pPolicyConfig;
 	ERole reserved = eConsole;
@@ -24,7 +30,7 @@ extern "C" HRESULT SetDefaultAudioPlaybackDevice(LPCWSTR devID)
 	return hr;
 }
 
-extern "C" __declspec(dllexport) void __stdcall GetDevices(LPWSTR* deviceNames)
+extern "C" __declspec(dllexport) void __stdcall GetDevices(AudioDevice** devices)
 {
 	HRESULT hr = CoInitialize(NULL);
 	if (SUCCEEDED(hr))
@@ -63,7 +69,10 @@ extern "C" __declspec(dllexport) void __stdcall GetDevices(LPWSTR* deviceNames)
 									hr = pStore->GetValue(PKEY_Device_FriendlyName, &friendlyName);
 									if (SUCCEEDED(hr))
 									{
-										deviceNames[i] = friendlyName.pwszVal;
+										AudioDevice* device = new AudioDevice();
+										device->id = wstrID;
+										device->name = friendlyName.pwszVal;
+										devices[i] = device;
 									}
 									pStore->Release();
 								}
